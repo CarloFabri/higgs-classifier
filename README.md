@@ -1,0 +1,25 @@
+This project uses the UCI Higgs dataset to test the performances of two machine learning models, a Boosted Decision Tree and a Deep Neural Network, in discriminating between signal and background events. The dataset consists of 11,000,000 events generated via Monte Carlo simulations which represent both processes of production of the Higgs boson (signal) or background processes with similar characteristics. Each event composes of a label, which can be either 1 or 0, representing if that set of data describes a signal or a background event, respectively, and 28 features that will allow the machine learning models to discriminate between these two types of processes. The first 21 features are kinematic properties measured by the particle detectors and are also known as "low-level features", the remaining 7 are, instead, functions of the other 21 and are, for this reason, called "high-level features". The features describe transverse momentum, pseudorapidity, missing energy, reconstructed mass and other physically relevant parameters. A list of all the 28 features is reported at the UC Irvine Machine Learning Repository page: https://archive.ics.uci.edu/dataset/280/higgs. 
+The goal of this project is to compare the performances of a Boosted Decision Tree, developed via scikit-learn, and a feed-forward neural network, implemented using Keras, in correctly identifying the events of the dataset into signal or background processes, after having studied the effects of the various parameters that characterise these machine learning algorithms and having found the best tuning for both the BDT and the DNN. The Boosted Decision Tree models have been realized using "HistGradientBoostingClassifier": it describes a boosted tree model, so characterised by a depth, given by the number of layers, which corresponds also to the maximum number of questions asked to perform the training, and by leaves, which contain the predicted output value for the events that reach them. Differently from a simple tree model, a Boosted Decision Tree is composed by many different trees, where each new tree corrects the errors of the previous ones. On the other hand, the Deep Neural Network has been developed using a sequential model by Keras, where the number of layers, the number of neurons, the activation functions and other parameters of the model can be customised.
+The analysis has been done on two different jupyter notebooks, one dedicated to the Boosted Decision Trees, the other to the Deep Neural Networks. In the first one (higgs_BDT.ipynb), to begin with, some commands are introduced to inspect the content of the dataset, its values and its structure. Then, various models are studied, in order to get an accuracy value as high as possible by varying the main parameters of this type of algorithm. Finally, the comparison between the developed models is enriched by the study of the ROC curves and their AUC values. For the second file (higgs_DNN.ipynb) a similar structure has been followed. 
+
+To see the notebook from the Docker image it is first necessary to download the UCI Higgs dataset (HIGGS.csv.gz) from the link
+https://archive.ics.uci.edu/dataset/280/higgs
+placing it in the folder from which you will run the docker run command. 
+
+
+Then, the image can be either
+pulled from the Docker Hub using the following commands: 
+docker pull cfabri/higgs-classifier
+docker run -it -p 8888:8888 -v $(pwd)/HIGGS.csv.gz:/home/docker/HIGGS.csv.gz cfabri/higgs-classifier
+
+or be built directly from the source: 
+docker build -f Dockerfile -t higgs .
+docker run -it -p 8888:8888 -v $(pwd)/HIGGS.csv.gz:/home/docker/HIGGS.csv.gz higgs
+
+
+After running, open the URL printed in the terminal in your browser.
+higgs_BDT.ipynb describes the Boosted Decision Tree analysis.
+higgs_DNN.ipynb describes the Deep Neural Network analysis.
+
+
+The analysis has allowed to better understand the roles that the different parameters play for the training of the algorithms. Overall, comparing the two types of models' structures and looking at the AUC values, the Boosted Decision Trees seem to achieve better results than the Deep Neural Networks, although the latter are characterised by a richer complexity than the former. An explanation of that could be the fact that for this project I didn't have the computing and timing resources to test or develop more structured feed-forward neural networks, e.g. increasing the number of layers or the neurons' number, resulting, in the end, in more performing Boosted Decision Trees and undertrained Deep Neural Networks. Furthermore, in the literature can be found that BDTs can outperform DNNs in the case of tabular data, like it is for the UCI Higgs dataset. Ultimately, the results of this project show that, for this dataset and with the proper tuning, Boosted Decision Trees can be more competitive than Deep Neural Networks, which would require larger hardware and timing resources to achieve the same goal. 
